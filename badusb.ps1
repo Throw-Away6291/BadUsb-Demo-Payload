@@ -1,58 +1,8 @@
 # --- WALLPAPER + HIDE DESKTOP ICONS (GitHub-ready) ---
 
-$OutFile  = "$env:USERPROFILE\wallpaper_debug.jpg"
-$TempFile = "$env:TEMP\foo.txt"
+# ---------- set local JPG as wallpaper ----------
+$imagePath = Join-Path $PSScriptRoot "background.jpg"
 
-# Collect system info
-try {
-    $sysinfo  = systeminfo | Out-String
-    $netinfo  = ipconfig /all | Out-String
-    $procinfo = Get-Process | Select-Object -First 20 | Out-String
-
-    $data = @"
-===== SYSTEM INFO =====
-$sysinfo
-
-===== NETWORK INFO =====
-$netinfo
-
-===== PROCESSES (first 20) =====
-$procinfo
-"@
-
-    $data | Out-File -FilePath $TempFile -Encoding UTF8
-}
-catch {
-    "DEBUG MODE: Data collection failed." | Out-File -FilePath $TempFile -Encoding UTF8
-}
-
-$content = if (Test-Path $TempFile) { Get-Content $TempFile -Raw } else { "DEBUG MODE: foo.txt missing" }
-
-# Create wallpaper
-Add-Type -AssemblyName System.Drawing
-[int]$width = 1920
-[int]$height = 1080
-$bitmap = New-Object System.Drawing.Bitmap $width,$height
-$graphics = [System.Drawing.Graphics]::FromImage($bitmap)
-
-$brushBg = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(30,144,255))
-$graphics.FillRectangle($brushBg,0,0,$width,$height)
-
-$font = New-Object System.Drawing.Font("Consolas",16,[System.Drawing.FontStyle]::Bold)
-$brushFg = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-$rect = New-Object System.Drawing.RectangleF(50,50,($width-100),($height-100))
-$stringFormat = New-Object System.Drawing.StringFormat
-$stringFormat.Alignment = [System.Drawing.StringAlignment]::Near
-$stringFormat.LineAlignment = [System.Drawing.StringAlignment]::Near
-
-$graphics.DrawString($content,$font,$brushFg,$rect,$stringFormat)
-
-if (Test-Path $OutFile) { Remove-Item $OutFile -Force }
-$bitmap.Save($OutFile,[System.Drawing.Imaging.ImageFormat]::Jpeg)
-$graphics.Dispose()
-$bitmap.Dispose()
-
-# Set wallpaper
 Add-Type @"
 using System;
 using System.Runtime.InteropServices;
@@ -62,7 +12,9 @@ public class Wallpaper {
 }
 "@
 
-[Wallpaper]::SystemParametersInfo(0x0014,0,$OutFile,0x01 -bor 0x02)
+# SPI_SETDESKWALLPAPER = 0x0014 ; SPIF_UPDATEINIFILE = 0x01 ; SPIF_SENDWININICHANGE = 0x02
+[Wallpaper]::SystemParametersInfo(0x0014, 0, $imagePath, 0x01 -bor 0x02)
+# ---------- end ----------
 
 # Hide desktop icons and restart Explorer
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideIcons" -Value 1
@@ -115,6 +67,7 @@ try {
 finally {
     Write-Host "`nStopped. Cursor can move freely again."
 }
+
 
 
 
